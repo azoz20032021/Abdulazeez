@@ -16,7 +16,7 @@ function Shards() {
   const hw = viewport.width / 2;
   const hh = viewport.height / 2;
   const compact = viewport.width < 4.2;
-  const s = compact ? 0.52 : Math.min(1.05, Math.max(0.6, viewport.width / 9));
+  const s = compact ? 0.72 : Math.min(1.05, Math.max(0.6, viewport.width / 9));
 
   useFrame(() => {
     const g = group.current;
@@ -29,7 +29,7 @@ function Shards() {
     <group ref={group}>
       <Float speed={1.1} rotationIntensity={0.55} floatIntensity={0.9}>
         <mesh
-          position={compact ? [hw - 0.55 * s, -hh + 1.1 * s, 0] : [hw - 1.35 * s, 0.2, 0]}
+          position={compact ? [hw - 0.35 * s, -hh + 0.7 * s, 0] : [hw - 1.35 * s, 0.2, 0]}
           rotation={[0.6, 0.3, 0.2]}
           scale={s}
         >
@@ -40,7 +40,7 @@ function Shards() {
 
       <Float speed={1.35} rotationIntensity={0.9} floatIntensity={1.3}>
         <mesh
-          position={compact ? [hw - 0.6 * s, hh - 1.5 * s, -0.4] : [hw - 1.45 * s, hh - 1.05 * s, -0.8]}
+          position={compact ? [hw - 0.8 * s, hh - 1.25 * s, -0.4] : [hw - 1.45 * s, hh - 1.05 * s, -0.8]}
           rotation={[0.2, 0.4, 0.5]}
           scale={s}
         >

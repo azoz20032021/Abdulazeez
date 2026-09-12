@@ -1,17 +1,22 @@
 import { useState } from 'react';
 import type { Project } from '../lib/content';
 import { projects } from '../lib/content';
-import { useReveal } from '../lib/motion';
+import { isCompact, useReveal, useTilt } from '../lib/motion';
 import SectionHead from './SectionHead';
 
 function Case({ project, index }: { project: Project; index: number }) {
-  const [activeId, setActiveId] = useState(project.views[0].id);
+  // On a phone, the phone screenshot is the one worth opening on.
+  const [activeId, setActiveId] = useState(() => {
+    const phone = project.views.find((v) => v.kind === 'phone');
+    return phone && isCompact() ? phone.id : project.views[0].id;
+  });
   const view = project.views.find((v) => v.id === activeId) ?? project.views[0];
+  const stage = useTilt<HTMLDivElement>(5);
 
   return (
     <article className={`case ${index % 2 === 1 ? 'case--flip' : ''}`} data-anim>
       <div className="case__media">
-        <div className="stage">
+        <div className="stage" ref={stage}>
           {view.kind === 'code' ? (
             <div className="frame frame--code" key={view.id}>
               <div className="frame__bar">

@@ -94,6 +94,108 @@ a {
   text-transform: uppercase;
 }
 
+/* Masked word, used by the split-text reveals. */
+.word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.word > span {
+  display: inline-block;
+  white-space: pre;
+}
+
+/* ---------- intro curtain ---------- */
+
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  background: var(--ink);
+}
+
+.intro__name {
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.4rem, 4vw, 2.4rem);
+  letter-spacing: -0.03em;
+}
+
+.intro__name span {
+  display: block;
+}
+
+.intro__line {
+  width: min(220px, 40vw);
+  height: 1px;
+  background: rgba(237, 235, 230, 0.16);
+  overflow: hidden;
+}
+
+.intro__line i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+/* ---------- page-wide 3D backdrop ---------- */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.backdrop canvas {
+  animation: canvas-in 1.2s ease both;
+}
+
+.backdrop__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(100deg, rgba(8, 9, 11, 0.92) 0%, rgba(8, 9, 11, 0.6) 44%, rgba(8, 9, 11, 0.08) 74%),
+    linear-gradient(to bottom, rgba(8, 9, 11, 0.8) 0%, rgba(8, 9, 11, 0) 24%, rgba(8, 9, 11, 0.88) 100%);
+}
+
+main {
+  position: relative;
+  z-index: 1;
+}
+
+/* Fine grain over the whole page — keeps large dark areas from reading as flat. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (max-width: 860px) {
+  .backdrop__scrim {
+    background: linear-gradient(
+      180deg,
+      rgba(8, 9, 11, 0.45) 0%,
+      rgba(8, 9, 11, 0.9) 17%,
+      rgba(8, 9, 11, 0.9) 76%,
+      rgba(8, 9, 11, 0.5) 100%
+    );
+  }
+}
+
 .shell {
   width: min(var(--shell), 100% - var(--pad) * 2);
   margin-inline: auto;
@@ -343,24 +445,9 @@ a {
   }
 }
 
-.hero__canvas--back {
-  z-index: 0;
-}
-
 .hero__canvas--front {
   z-index: 3;
   pointer-events: none;
-}
-
-.hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    linear-gradient(100deg, rgba(8, 9, 11, 0.92) 0%, rgba(8, 9, 11, 0.6) 44%, rgba(8, 9, 11, 0.08) 74%),
-    linear-gradient(to bottom, rgba(8, 9, 11, 0.8) 0%, rgba(8, 9, 11, 0) 24%, rgba(8, 9, 11, 0.88) 100%);
 }
 
 .hero__inner {
@@ -461,18 +548,6 @@ a {
   .hero__eyebrow-loc {
     display: none;
   }
-
-  /* Portrait puts the whole viewport inside the wide gradient, so the scrim
-     darkens only the band the copy sits in and leaves the corners open. */
-  .hero::after {
-    background: linear-gradient(
-      180deg,
-      rgba(8, 9, 11, 0.45) 0%,
-      rgba(8, 9, 11, 0.9) 17%,
-      rgba(8, 9, 11, 0.9) 76%,
-      rgba(8, 9, 11, 0.5) 100%
-    );
-  }
 }
 
 .hero__cue {
@@ -512,7 +587,8 @@ a {
 
 .metrics {
   border-block: 1px solid var(--line);
-  background: var(--ink-1);
+  background: rgba(12, 14, 17, 0.72);
+  backdrop-filter: blur(6px);
 }
 
 .metrics__row {
@@ -540,11 +616,23 @@ a {
 }
 
 .metric__label {
+  position: relative;
   margin-top: 12px;
+  padding-top: 14px;
   color: var(--bone-3);
   font-size: 0.68rem;
   line-height: 1.5;
   letter-spacing: 0.1em;
+}
+
+.metric__label::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  inset-inline-start: 0;
+  width: 26px;
+  height: 1px;
+  background: var(--accent);
 }
 
 @media (max-width: 860px) {
@@ -622,12 +710,20 @@ a {
   align-items: center;
 }
 
+/* Grid and flex items default to min-width:auto, so a tall phone screenshot
+   sized by height would widen its column to the image's natural width. */
+.case__media,
+.case__body {
+  min-width: 0;
+}
+
 .case--flip .case__media {
   order: 2;
 }
 
 .case__media {
   position: relative;
+  perspective: 1600px;
 }
 
 /* One fixed-ratio stage so switching between a desktop shot and a phone
@@ -638,6 +734,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
+  transform-style: preserve-3d;
 }
 
 .stage > * {
@@ -745,6 +842,7 @@ a {
 .phone {
   position: relative;
   height: 96%;
+  max-width: 100%;
   padding: 5px;
   border-radius: 26px;
   background: linear-gradient(155deg, #3a4049 0%, #0b0d10 48%, #262b31 100%);
@@ -773,6 +871,7 @@ a {
   display: block;
   height: 100%;
   width: auto;
+  max-width: 100%;
   object-fit: cover;
   object-position: top center;
 }
@@ -908,7 +1007,7 @@ a {
 
 @media (max-width: 1023px) {
   .case {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 30px;
   }
 
@@ -924,6 +1023,13 @@ a {
   font-size: 0.66rem;
   color: var(--bone-2);
   letter-spacing: 0.09em;
+  transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.chip:hover {
+  color: var(--bone);
+  border-color: rgba(255, 95, 46, 0.55);
+  transform: translateY(-2px);
 }
 
 .link-arrow {
@@ -1089,6 +1195,7 @@ a {
 }
 
 .contact__mail {
+  position: relative;
   display: inline-block;
   font-family: var(--font-display);
   font-weight: 600;
@@ -1096,11 +1203,28 @@ a {
   letter-spacing: -0.04em;
   line-height: 1.05;
   word-break: break-word;
-  transition: color 0.2s ease;
+  transition: color 0.25s ease;
+}
+
+.contact__mail::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0.06em;
+  width: 100%;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .contact__mail:hover {
   color: var(--accent);
+}
+
+.contact__mail:hover::after {
+  transform: scaleX(1);
 }
 
 .contact__status {
@@ -1257,6 +1381,12 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Nothing fades the backdrop back when the scroll tween is off, so hold it
+     at a level that leaves the copy readable the whole way down. */
+  .backdrop {
+    opacity: 0.4;
+  }
+
   *,
   *::before,
   *::after {

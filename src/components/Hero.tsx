@@ -2,29 +2,36 @@ import { lazy, Suspense, useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 
 // three + drei ship in their own chunk, so the headline paints before WebGL loads.
-const HeroField = lazy(() => import('../three/HeroField'));
 const HeroShards = lazy(() => import('../three/HeroShards'));
 import { intro, person } from '../lib/content';
-import { prefersReducedMotion, scrollToSection } from '../lib/motion';
+import { introPlays } from '../lib/intro';
+import { prefersReducedMotion, scrollToSection, useMagnetic } from '../lib/motion';
 
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
+  const cta = useMagnetic<HTMLAnchorElement>(0.22);
 
   useLayoutEffect(() => {
     if (prefersReducedMotion()) return;
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-      tl.from('.hero__eyebrow', { y: 14, opacity: 0, duration: 0.7 }, 0.15)
-        .from('.hero__line span', { yPercent: 108, duration: 1.05, stagger: 0.09 }, 0.2)
-        .from('.hero__lede', { y: 18, opacity: 0, duration: 0.8 }, 0.75)
-        .from('.hero__actions > *', { y: 16, opacity: 0, duration: 0.7, stagger: 0.08 }, 0.9)
-        .from('.hero__canvas', { opacity: 0, duration: 1.4 }, 0)
-        .from('.hero__cue', { opacity: 0, duration: 0.8 }, 1.3);
+      // Starts under the intro curtain, so the hero is already moving when it lifts.
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' }, delay: introPlays() ? 0.6 : 0.1 });
+      tl.from('.hero__eyebrow', { y: 14, opacity: 0, duration: 0.7 }, 0.1)
+        .from('.hero__line span', { yPercent: 108, duration: 1.15, stagger: 0.1 }, 0.15)
+        .from('.hero__lede', { y: 18, opacity: 0, duration: 0.8 }, 0.7)
+        .from('.hero__actions > *', { y: 16, opacity: 0, duration: 0.7, stagger: 0.08 }, 0.85)
+        .from('.hero__cue', { opacity: 0, duration: 0.8 }, 1.2);
 
       gsap.to('.hero__inner', {
         y: 90,
         opacity: 0.15,
+        ease: 'none',
+        scrollTrigger: { trigger: root.current, start: 'top top', end: 'bottom top', scrub: true },
+      });
+
+      gsap.to('.hero__canvas--front', {
+        yPercent: -14,
         ease: 'none',
         scrollTrigger: { trigger: root.current, start: 'top top', end: 'bottom top', scrub: true },
       });
@@ -35,12 +42,6 @@ export default function Hero() {
 
   return (
     <section className="hero" id="top" ref={root}>
-      <div className="hero__canvas hero__canvas--back" aria-hidden="true">
-        <Suspense fallback={null}>
-          <HeroField />
-        </Suspense>
-      </div>
-
       <div className="hero__inner shell">
         <p className="hero__eyebrow mono">
           {person.role}
@@ -61,6 +62,7 @@ export default function Hero() {
           <a
             className="btn btn--solid"
             href="#work"
+            ref={cta}
             onClick={(e) => {
               e.preventDefault();
               scrollToSection('#work');

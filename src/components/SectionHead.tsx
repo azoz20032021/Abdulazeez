@@ -10,7 +10,7 @@ export default function SectionHead({ index, label, title }: Props) {
       <p className="sec__index mono" data-anim>
         <span>{index}</span> {label}
       </p>
-      <h2 className="sec__title" data-anim>
+      <h2 className="sec__title" data-split>
         {title}
       </h2>
     </div>

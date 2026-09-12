@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import Nav from './components/Nav';
+import Intro from './components/Intro';
+import Backdrop from './components/Backdrop';
 import Hero from './components/Hero';
 import Metrics from './components/Metrics';
 import Work from './components/Work';
@@ -23,6 +25,9 @@ export default function App() {
 
   return (
     <>
+      <Intro />
+      <Backdrop />
+      <div className="grain" aria-hidden="true" />
       <Nav />
       <main>
         <Hero />
