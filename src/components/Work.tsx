@@ -1,82 +1,74 @@
-import { useLayoutEffect, useRef } from 'react';
-import gsap from 'gsap';
+import { useState } from 'react';
+import type { Project } from '../lib/content';
 import { projects } from '../lib/content';
-import { prefersReducedMotion, useReveal } from '../lib/motion';
+import { useReveal } from '../lib/motion';
 import SectionHead from './SectionHead';
 
-function useMediaParallax() {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el || prefersReducedMotion()) return;
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        el.querySelector('img'),
-        { yPercent: -4 },
-        {
-          yPercent: 4,
-          ease: 'none',
-          scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true },
-        },
-      );
-    }, el);
-
-    return () => ctx.revert();
-  }, []);
-
-  return ref;
-}
-
-function Case({ project, index }: { project: (typeof projects)[number]; index: number }) {
-  const media = useMediaParallax();
+function Case({ project, index }: { project: Project; index: number }) {
+  const [activeId, setActiveId] = useState(project.views[0].id);
+  const view = project.views.find((v) => v.id === activeId) ?? project.views[0];
 
   return (
     <article className={`case ${index % 2 === 1 ? 'case--flip' : ''}`} data-anim>
       <div className="case__media">
-        <div className="frame" ref={media}>
-          <div className="frame__bar">
-            <i />
-            <i />
-            <i />
-            <span className="mono">{project.shot.bar}</span>
-          </div>
-          <div className="frame__shot">
-            <img
-              src={project.shot.src}
-              alt={project.shot.alt}
-              loading="lazy"
-              width={1440}
-              height={900}
-            />
-          </div>
+        <div className="stage">
+          {view.kind === 'code' ? (
+            <div className="frame frame--code" key={view.id}>
+              <div className="frame__bar">
+                <i />
+                <i />
+                <i />
+                <span className="mono">{view.bar}</span>
+              </div>
+              <pre className="codeblock mono">
+                {view.lines.map((line, i) => (
+                  <span className={line.tone ? `codeblock__${line.tone}` : undefined} key={i}>
+                    {line.text || ' '}
+                    {'\n'}
+                  </span>
+                ))}
+              </pre>
+            </div>
+          ) : view.kind === 'phone' ? (
+            <div className="phone" key={view.id}>
+              <div className="phone__screen">
+                <span className="phone__island" aria-hidden="true" />
+                <img src={view.src} alt={view.alt} loading="lazy" />
+              </div>
+              <span className="phone__button" aria-hidden="true" />
+            </div>
+          ) : (
+            <div className="frame" key={view.id}>
+              <div className="frame__bar">
+                <i />
+                <i />
+                <i />
+                <span className="mono">{view.bar}</span>
+              </div>
+              <div className="frame__shot">
+                <img src={view.src} alt={view.alt} loading="lazy" />
+              </div>
+            </div>
+          )}
         </div>
 
-        <p className="case__caption mono">{project.shot.caption}</p>
-
-        {project.gallery && (
-          <div className="gallery">
-            <p className="gallery__label mono">{project.gallery.label}</p>
-            <div className="gallery__row">
-              {project.gallery.items.map((item) =>
-                item.kind === 'phone' ? (
-                  <div className="phone" key={item.src}>
-                    <div className="phone__screen">
-                      <span className="phone__island" aria-hidden="true" />
-                      <img src={item.src} alt={item.alt} loading="lazy" />
-                    </div>
-                    <span className="phone__button" aria-hidden="true" />
-                  </div>
-                ) : (
-                  <div className="gallery__item" key={item.src}>
-                    <img src={item.src} alt={item.alt} loading="lazy" />
-                  </div>
-                ),
-              )}
-            </div>
+        {project.views.length > 1 && (
+          <div className="switcher" role="group" aria-label={`${project.title} views`}>
+            {project.views.map((v) => (
+              <button
+                key={v.id}
+                type="button"
+                className={`switcher__btn mono ${v.id === activeId ? 'is-active' : ''}`}
+                aria-pressed={v.id === activeId}
+                onClick={() => setActiveId(v.id)}
+              >
+                {v.label}
+              </button>
+            ))}
           </div>
         )}
+
+        <p className="case__caption mono">{view.caption}</p>
       </div>
 
       <div className="case__body">

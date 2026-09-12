@@ -21,6 +21,16 @@ export const metrics = [
   { value: 60, suffix: '×', label: 'Fewer reads on the busiest poll' },
 ];
 
+export type ProjectView = {
+  id: string;
+  label: string;
+  caption: string;
+  bar?: string;
+} & (
+  | { kind: 'desktop' | 'phone'; src: string; alt: string }
+  | { kind: 'code'; lines: { text: string; tone?: 'dim' | 'accent' }[] }
+);
+
 export type Project = {
   id: string;
   title: string;
@@ -29,8 +39,7 @@ export type Project = {
   summary: string;
   highlights: string[];
   stack: string[];
-  shot: { src: string; alt: string; caption: string; bar: string };
-  gallery?: { label: string; items: { src: string; alt: string; kind: 'wide' | 'phone' }[] };
+  views: ProjectView[];
   live?: { label: string; href: string };
   source?: { label: string; href: string };
   note?: string;
@@ -61,27 +70,34 @@ export const projects: Project[] = [
       'Workbox PWA',
       'Vite',
     ],
-    shot: {
-      src: '/shots/school-login.jpg',
-      alt: 'The production sign-in screen: school name in Arabic, UID and password fields',
-      caption: 'Production sign-in — staff, students and parents reach the live system here',
-      bar: 'Al-Ma’ali Private Secondary School — production',
-    },
-    gallery: {
-      label: 'Public demo — the same frontend on invented data, no backend',
-      items: [
-        {
-          src: '/shots/school-admin.jpg',
-          alt: 'Administrator dashboard: student totals, absences, class list and the school-day menu',
-          kind: 'wide',
-        },
-        {
-          src: '/shots/school-student.jpg',
-          alt: 'Student view on a phone: average, attendance, fees due and the QR card for the gate',
-          kind: 'phone',
-        },
-      ],
-    },
+    views: [
+      {
+        id: 'production',
+        label: 'Production',
+        kind: 'desktop',
+        src: '/shots/school-login.jpg',
+        alt: 'The production sign-in screen: school name in Arabic, UID and password fields',
+        caption: 'Production sign-in — staff, students and parents reach the live system here',
+        bar: 'Al-Ma’ali Private Secondary School — production',
+      },
+      {
+        id: 'admin',
+        label: 'Administrator',
+        kind: 'desktop',
+        src: '/shots/school-admin.jpg',
+        alt: 'Administrator dashboard: student totals, absences, class list and the school-day menu',
+        caption: 'Administrator — classes, absences, finance and the gate tablet behind one menu',
+        bar: 'Public demo — invented people, no real records',
+      },
+      {
+        id: 'student',
+        label: 'Student · phone',
+        kind: 'phone',
+        src: '/shots/school-student.jpg',
+        alt: 'Student view on a phone: average, attendance, fees due and the QR card for the gate',
+        caption: 'Student on a phone — marks, attendance, fees in IQD and the QR card the gate reads',
+      },
+    ],
     live: { label: 'abdulazeezdoman.tech', href: 'https://abdulazeezdoman.tech' },
     source: { label: 'SchoolDemo', href: 'https://github.com/azoz20032021/SchoolDemo' },
     note: 'Demo: four one-click roles, no credentials to type.',
@@ -99,14 +115,80 @@ export const projects: Project[] = [
       'Shipped in English, Arabic (full RTL) and Turkish.',
     ],
     stack: ['React', 'TypeScript', 'Node.js', 'Socket.IO', 'MongoDB', 'Docker', 'Jest'],
-    shot: {
-      src: '/shots/letmessage.jpg',
-      alt: 'LetMessage sign-in screen with a one-click demo account',
-      caption: 'Sign in — English, Arabic (RTL) and Turkish, with a one-click demo account',
-      bar: 'letmessege-client.vercel.app',
-    },
+    views: [
+      {
+        id: 'dark',
+        label: 'Dark',
+        kind: 'desktop',
+        src: '/shots/letmessage-dark.jpg',
+        alt: 'Group conversation in dark mode with presence dots, unread badges and read receipts',
+        caption: 'A group room in dark mode — presence dots, unread badges, delivery ticks',
+        bar: 'letmessege-client.vercel.app',
+      },
+      {
+        id: 'light',
+        label: 'Light',
+        kind: 'desktop',
+        src: '/shots/letmessage-light.jpg',
+        alt: 'The same conversation in light mode',
+        caption: 'The same room in light mode — one token set, both themes',
+        bar: 'letmessege-client.vercel.app',
+      },
+      {
+        id: 'rtl',
+        label: 'Arabic · RTL',
+        kind: 'desktop',
+        src: '/shots/letmessage-rtl.jpg',
+        alt: 'The same conversation in Arabic with the whole layout mirrored right to left',
+        caption: 'Arabic mirrors the whole layout, not just the text — sidebar, ticks and input all flip',
+        bar: 'letmessege-client.vercel.app',
+      },
+      {
+        id: 'phone',
+        label: 'Phone',
+        kind: 'phone',
+        src: '/shots/letmessage-mobile.jpg',
+        alt: 'The conversation view on a phone',
+        caption: 'On a phone the list and the room become two screens instead of two panes',
+      },
+    ],
     live: { label: 'letmessege-client.vercel.app', href: 'https://letmessege-client.vercel.app' },
     note: 'Demo login: demo@test.com / 123456',
+  },
+  {
+    id: 'eventpulse',
+    title: 'EventPulse',
+    kind: 'Webhook delivery & event API',
+    year: '2025',
+    summary:
+      'A distributed webhook delivery API. Register destinations, publish events, and let it handle signing, retries and dead-lettering — with an ingestion path that stays correct when clients retry and infrastructure fails.',
+    highlights: [
+      'Two-tier idempotency — an atomic Redis lock backed by a UNIQUE index in MySQL — so a client retrying after a network blip never ingests the same event twice.',
+      'An exponential backoff ladder with jitter, and a dead-letter state that records the full error and response alongside a manual retry endpoint.',
+      'HMAC-SHA256 over timestamp.body with a replay window and zero-downtime secret rotation, so a receiver can tell a real webhook from a forged one.',
+    ],
+    stack: ['Node.js', 'Express', 'MySQL', 'Redis', 'BullMQ', 'Docker'],
+    views: [
+      {
+        id: 'api',
+        label: 'Delivery contract',
+        kind: 'code',
+        bar: 'EventPulse — delivery guarantees',
+        caption: 'The five production edge cases a webhook sender runs into, and what answers each',
+        lines: [
+          { text: 'POST /events', tone: 'accent' },
+          { text: 'Idempotency-Key: 6b1f…      →  202 Accepted' },
+          { text: '' },
+          { text: 'ingest      Redis lock + UNIQUE index in MySQL', tone: 'dim' },
+          { text: 'retry       5s → 30s → 5m → 30m → 2h  (+ jitter)', tone: 'dim' },
+          { text: 'sign        HMAC-SHA256(timestamp.body)', tone: 'dim' },
+          { text: 'replay      window check + secret rotation', tone: 'dim' },
+          { text: 'give up     dead letter, full response kept', tone: 'dim' },
+        ],
+      },
+    ],
+    source: { label: 'EventPulse', href: 'https://github.com/azoz20032021/EventPulse' },
+    note: 'Backend only — no interface to screenshot.',
   },
   {
     id: 'cineluxe',
@@ -117,12 +199,17 @@ export const projects: Project[] = [
       'A high-performance React SPA over large trending and top-rated datasets from an external API, tuned for fast first paint and smooth list rendering.',
     highlights: [],
     stack: ['React', 'TypeScript', 'REST API', 'Vercel'],
-    shot: {
-      src: '/shots/cineluxe.jpg',
-      alt: 'Cineluxe home screen with a featured film and a carousel of posters',
-      caption: 'Home — featured title and trending carousel over a live external catalogue',
-      bar: 'cine-luxe.vercel.app',
-    },
+    views: [
+      {
+        id: 'home',
+        label: 'Home',
+        kind: 'desktop',
+        src: '/shots/cineluxe.jpg',
+        alt: 'Cineluxe home screen with a featured film and a carousel of posters',
+        caption: 'Home — featured title and trending carousel over a live external catalogue',
+        bar: 'cine-luxe.vercel.app',
+      },
+    ],
     live: { label: 'cine-luxe.vercel.app', href: 'https://cine-luxe.vercel.app' },
   },
 ];
