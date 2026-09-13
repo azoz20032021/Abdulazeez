@@ -657,6 +657,8 @@ main {
 .sec {
   padding-block: clamp(84px, 10vw, 148px);
   border-top: 1px solid var(--line);
+  /* Clears the fixed header, for a plain #hash link as much as for Lenis. */
+  scroll-margin-top: 84px;
 }
 
 .sec:first-of-type {
@@ -793,16 +795,17 @@ main {
   position: relative;
   aspect-ratio: 16 / 10;
   overflow: hidden;
+  background: var(--ink);
 }
 
+/* Whole screen, never a crop: these are the interfaces, and cutting the chrome
+   off the edges is what makes a screenshot look like half a screenshot. */
 .frame__shot img {
-  position: absolute;
-  inset-block-start: -6%;
-  inset-inline: 0;
+  display: block;
   width: 100%;
-  height: 112%;
-  object-fit: cover;
-  object-position: top center;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
 }
 
 .case__caption {
@@ -855,7 +858,7 @@ main {
   will-change: transform;
 }
 
-.phone:hover {
+.stage:hover .phone {
   transform: perspective(1400px) rotateY(-4deg) rotateX(1deg) rotate(0deg) translateY(-8px);
 }
 
@@ -872,8 +875,8 @@ main {
   height: 100%;
   width: auto;
   max-width: 100%;
-  object-fit: cover;
-  object-position: top center;
+  object-fit: contain;
+  object-position: center;
 }
 
 .phone__island {
@@ -1051,6 +1054,168 @@ main {
 .link-arrow:hover {
   color: var(--accent);
   border-bottom-color: var(--accent);
+}
+
+/* Below the two-column breakpoint the handset is the main thing on screen, so
+   the stage turns portrait instead of framing it inside a landscape box. */
+@media (max-width: 1023px) {
+  .stage--phone {
+    aspect-ratio: auto;
+    height: clamp(360px, 66vh, 560px);
+  }
+
+  /* The handset gives back a strip at the bottom so the control has its own
+     room instead of sitting on the screen it is offering to enlarge. */
+  .stage--phone .phone {
+    height: 86%;
+  }
+
+  .stage--phone .stage__open {
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0;
+  }
+}
+
+/* Opens a screenshot at full size — the framed one is a thumbnail. */
+.stage__open {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 14px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: var(--bone);
+  cursor: zoom-in;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.stage__open span {
+  padding: 7px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(8, 9, 11, 0.74);
+  backdrop-filter: blur(6px);
+  font-size: 0.56rem;
+}
+
+.stage:hover .stage__open,
+.stage__open:focus-visible {
+  opacity: 1;
+}
+
+
+/* No hover to reveal it on a touch screen, so it stays visible there. */
+@media (hover: none) {
+  .stage__open {
+    opacity: 0.85;
+  }
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: clamp(16px, 4vw, 48px);
+  background: rgba(4, 5, 7, 0.93);
+  backdrop-filter: blur(10px);
+  cursor: zoom-out;
+  animation: lightbox-in 0.26s ease both;
+}
+
+@keyframes lightbox-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.lightbox__figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  max-width: 100%;
+  cursor: default;
+  animation: lightbox-rise 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+@keyframes lightbox-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.lightbox__figure img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(1320px, 100%);
+  max-height: 76vh;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  box-shadow: 0 50px 120px -40px rgba(0, 0, 0, 0.95);
+}
+
+.lightbox__figure figcaption {
+  max-width: 64ch;
+  color: var(--bone-3);
+  font-size: 0.6rem;
+  line-height: 1.75;
+  text-align: center;
+}
+
+.lightbox__close {
+  position: absolute;
+  top: clamp(14px, 3vw, 28px);
+  inset-inline-end: clamp(14px, 3vw, 28px);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: rgba(12, 14, 17, 0.82);
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.lightbox__close:hover {
+  border-color: var(--accent);
+  transform: rotate(90deg);
+}
+
+.lightbox__close span {
+  position: absolute;
+  width: 15px;
+  height: 1px;
+  background: var(--bone);
+}
+
+.lightbox__close span:first-child {
+  transform: rotate(45deg);
+}
+
+.lightbox__close span:last-child {
+  transform: rotate(-45deg);
 }
 
 /* ---------- about ---------- */

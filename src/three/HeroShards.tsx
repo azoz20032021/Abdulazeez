@@ -80,7 +80,9 @@ export default function HeroShards() {
       camera={{ position: [0, 0, 7], fov: 42 }}
       gl={{ alpha: true, antialias: true }}
       frameloop={reduced ? 'demand' : 'always'}
-      style={{ background: 'transparent' }}
+      // React Three Fiber writes pointer-events:auto on its own wrapper, which beats
+      // the class on the parent — without this the canvas swallows every hero click.
+      style={{ background: 'transparent', pointerEvents: 'none' }}
     >
       <ambientLight intensity={0.4} />
       <directionalLight position={[4, 6, 5]} intensity={1.1} />

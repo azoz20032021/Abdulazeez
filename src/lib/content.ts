@@ -7,6 +7,7 @@ export const person = {
   github: 'https://github.com/azoz20032021',
   linkedin: 'https://linkedin.com/in/abdul-aziz-874455225',
   site: 'https://abdulazeezdoman.tech',
+  cv: '/Abdulazeez-Alagele-CV.pdf',
 };
 
 export const intro = {

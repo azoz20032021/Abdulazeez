@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Project } from '../lib/content';
 import { projects } from '../lib/content';
 import { isCompact, useReveal, useTilt } from '../lib/motion';
+import Lightbox from './Lightbox';
 import SectionHead from './SectionHead';
 
 function Case({ project, index }: { project: Project; index: number }) {
@@ -12,11 +13,12 @@ function Case({ project, index }: { project: Project; index: number }) {
   });
   const view = project.views.find((v) => v.id === activeId) ?? project.views[0];
   const stage = useTilt<HTMLDivElement>(5);
+  const [zoomed, setZoomed] = useState(false);
 
   return (
     <article className={`case ${index % 2 === 1 ? 'case--flip' : ''}`} data-anim>
       <div className="case__media">
-        <div className="stage" ref={stage}>
+        <div className={`stage ${view.kind === 'phone' ? 'stage--phone' : ''}`} ref={stage}>
           {view.kind === 'code' ? (
             <div className="frame frame--code" key={view.id}>
               <div className="frame__bar">
@@ -55,7 +57,27 @@ function Case({ project, index }: { project: Project; index: number }) {
               </div>
             </div>
           )}
+
+          {view.kind !== 'code' && (
+            <button
+              className="stage__open"
+              type="button"
+              onClick={() => setZoomed(true)}
+              aria-label={`Open the ${view.label} screen full size`}
+            >
+              <span className="mono">Full size</span>
+            </button>
+          )}
         </div>
+
+        {view.kind !== 'code' && zoomed && (
+          <Lightbox
+            src={view.src}
+            alt={view.alt}
+            caption={`${project.title} — ${view.caption}`}
+            onClose={() => setZoomed(false)}
+          />
+        )}
 
         {project.views.length > 1 && (
           <div className="switcher" role="group" aria-label={`${project.title} views`}>

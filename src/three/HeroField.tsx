@@ -105,6 +105,8 @@ export default function HeroField() {
       camera={{ position: [0, 3.1, 7.4], fov: 38 }}
       gl={{ antialias: !compact, powerPreference: 'high-performance' }}
       frameloop={reduced ? 'demand' : 'always'}
+      // Same as the hero shards: R3F's inline pointer-events:auto has to be undone.
+      style={{ pointerEvents: 'none' }}
       onCreated={({ camera }) => camera.lookAt(0, -0.4, 0)}
     >
       <color attach="background" args={['#08090B']} />

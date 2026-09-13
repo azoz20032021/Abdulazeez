@@ -8,7 +8,7 @@ import Work from './components/Work';
 import About from './components/About';
 import Stack from './components/Stack';
 import Contact from './components/Contact';
-import { keepTriggersFresh, startSmoothScroll } from './lib/motion';
+import { keepTriggersFresh, scrollToSection, startSmoothScroll } from './lib/motion';
 import { trackPointer } from './lib/pointer';
 
 export default function App() {
@@ -16,6 +16,16 @@ export default function App() {
     const stopScroll = startSmoothScroll();
     const stopPointer = trackPointer();
     const stopRefresh = keepTriggersFresh();
+
+    // A shared #section link should land on that section once Lenis owns the
+    // scroll, and again once images have settled and moved everything below them.
+    const hash = window.location.hash;
+    const jump = () => scrollToSection(hash);
+    if (hash) {
+      requestAnimationFrame(jump);
+      window.addEventListener('load', jump, { once: true });
+    }
+
     return () => {
       stopScroll();
       stopPointer();

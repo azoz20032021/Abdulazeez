@@ -133,6 +133,9 @@ export default function Nav() {
             <a className="mono" href={person.linkedin} target="_blank" rel="noreferrer">
               LinkedIn
             </a>
+            <a className="mono" href={person.cv} target="_blank" rel="noreferrer">
+              CV
+            </a>
           </div>
         </div>
       </div>

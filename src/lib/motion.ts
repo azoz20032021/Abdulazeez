@@ -29,16 +29,37 @@ export function startSmoothScroll() {
     ScrollTrigger.update();
   });
 
-  const raf = (time: number) => instance.raf(time * 1000);
-  gsap.ticker.add(raf);
+  // Lenis runs on its own animation frame rather than gsap.ticker. GSAP parks its
+  // ticker once nothing is tweening and it is the only listener on it, and a parked
+  // ticker would leave the page unable to scroll at all.
+  let frame = requestAnimationFrame(function tick(time) {
+    instance.raf(time);
+    frame = requestAnimationFrame(tick);
+  });
   gsap.ticker.lagSmoothing(0);
 
   return () => {
-    gsap.ticker.remove(raf);
+    cancelAnimationFrame(frame);
     instance.destroy();
     lenis = null;
     scrollState.velocity = 0;
   };
+}
+
+/**
+ * Browsers replay the last scroll offset on reload, which drops a returning
+ * visitor into the middle of the page behind the intro curtain. The site is a
+ * single narrative, so it always opens at the hero unless a section was linked.
+ */
+export function openAtTop() {
+  if (window.location.hash) return;
+
+  // ScrollTrigger snapshots history.scrollRestoration when it registers and
+  // writes that snapshot back on every refresh, so setting the history property
+  // directly gets undone — it has to be told through its own API.
+  ScrollTrigger.clearScrollMemory('manual');
+  window.scrollTo(0, 0);
+  window.addEventListener('load', () => window.scrollTo(0, 0), { once: true });
 }
 
 export function setScrollLock(locked: boolean) {
@@ -48,19 +69,21 @@ export function setScrollLock(locked: boolean) {
   else lenis.start();
 }
 
-/** Clears the fixed header so the section title is not hidden under it. */
-const NAV_OFFSET = -84;
+/** Matches the scroll-margin-top on sections, for the no-Lenis fallback. */
+const NAV_OFFSET = 84;
 
 export function scrollToSection(hash: string) {
   const target = document.querySelector<HTMLElement>(hash);
   if (!target) return;
 
+  // Sections carry scroll-margin-top, and Lenis reads that itself — which is why
+  // no offset is passed here, and why a plain #hash link lands in the same place.
   if (lenis) {
-    lenis.scrollTo(target, { offset: NAV_OFFSET });
+    lenis.scrollTo(target);
     return;
   }
 
-  const top = target.getBoundingClientRect().top + window.scrollY + NAV_OFFSET;
+  const top = target.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
   window.scrollTo({ top, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
 }
 

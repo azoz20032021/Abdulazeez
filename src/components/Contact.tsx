@@ -29,6 +29,9 @@ export default function Contact() {
           <a className="link-arrow" href={`tel:${person.phone.replace(/\s/g, '')}`}>
             {person.phone}
           </a>
+          <a className="link-arrow" href={person.cv} target="_blank" rel="noreferrer">
+            CV (PDF)
+          </a>
         </div>
 
         <footer className="foot" data-anim>
