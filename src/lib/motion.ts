@@ -29,6 +29,43 @@ export function startSmoothScroll() {
     ScrollTrigger.update();
   });
 
+  // Lenis owns the scroll position, so a native arrow-key step gets overwritten
+  // on the next frame. With no scrollbar to drag, the keyboard has to work, so
+  // the keys are mapped onto Lenis directly.
+  const onKey = (event: KeyboardEvent) => {
+    if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
+
+    // Typing, and anything that answers to the key itself, is left alone.
+    // The target is not always an element — a synthetic event can come off window.
+    const el = event.target;
+    if (el instanceof Element && el.closest('input, textarea, select, button, a, [contenteditable="true"]')) {
+      return;
+    }
+
+    const page = window.innerHeight * 0.9;
+    const step: Record<string, number> = {
+      ArrowDown: 120,
+      ArrowUp: -120,
+      PageDown: page,
+      PageUp: -page,
+      ' ': event.shiftKey ? -page : page,
+    };
+
+    if (event.key === 'Home' || event.key === 'End') {
+      event.preventDefault();
+      instance.scrollTo(event.key === 'Home' ? 0 : instance.limit);
+      return;
+    }
+
+    const move = step[event.key];
+    if (move === undefined) return;
+
+    event.preventDefault();
+    instance.scrollTo(instance.targetScroll + move);
+  };
+
+  window.addEventListener('keydown', onKey);
+
   // Lenis runs on its own animation frame rather than gsap.ticker. GSAP parks its
   // ticker once nothing is tweening and it is the only listener on it, and a parked
   // ticker would leave the page unable to scroll at all.
@@ -39,6 +76,7 @@ export function startSmoothScroll() {
   gsap.ticker.lagSmoothing(0);
 
   return () => {
+    window.removeEventListener('keydown', onKey);
     cancelAnimationFrame(frame);
     instance.destroy();
     lenis = null;
