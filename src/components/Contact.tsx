@@ -1,6 +1,10 @@
+import { FileDown, Phone } from 'lucide-react';
 import { person } from '../lib/content';
 import { useReveal } from '../lib/motion';
+import ArrowLink from './ArrowLink';
 import SectionHead from './SectionHead';
+
+const ICON = { size: 15, strokeWidth: 1.8, 'aria-hidden': true } as const;
 
 export default function Contact() {
   const ref = useReveal<HTMLElement>();
@@ -20,18 +24,18 @@ export default function Contact() {
         </a>
 
         <div className="contact__row" data-anim>
-          <a className="link-arrow" href={person.github} target="_blank" rel="noreferrer">
-            GitHub
-          </a>
-          <a className="link-arrow" href={person.linkedin} target="_blank" rel="noreferrer">
-            LinkedIn
-          </a>
-          <a className="link-arrow" href={`tel:${person.phone.replace(/\s/g, '')}`}>
+          <ArrowLink href={person.github}>GitHub</ArrowLink>
+          <ArrowLink href={person.linkedin}>LinkedIn</ArrowLink>
+          <ArrowLink
+            href={`tel:${person.phone.replace(/\s/g, '')}`}
+            external={false}
+            icon={<Phone {...ICON} />}
+          >
             {person.phone}
-          </a>
-          <a className="link-arrow" href={person.cv} target="_blank" rel="noreferrer">
+          </ArrowLink>
+          <ArrowLink href={person.cv} icon={<FileDown {...ICON} />}>
             CV (PDF)
-          </a>
+          </ArrowLink>
         </div>
 
         <footer className="foot" data-anim>

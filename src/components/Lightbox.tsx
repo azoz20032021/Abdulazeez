@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { X } from 'lucide-react';
 import { setScrollLock } from '../lib/motion';
 
 type Props = {
@@ -43,8 +44,7 @@ export default function Lightbox({ src, alt, caption, onClose }: Props) {
         onClick={onClose}
         aria-label="Close"
       >
-        <span aria-hidden="true" />
-        <span aria-hidden="true" />
+        <X size={19} strokeWidth={1.6} aria-hidden="true" />
       </button>
 
       <figure className="lightbox__figure" onClick={(e) => e.stopPropagation()}>

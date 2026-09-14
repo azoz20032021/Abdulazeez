@@ -1,16 +1,18 @@
 import { useState } from 'react';
+import { Maximize2 } from 'lucide-react';
 import type { Project } from '../lib/content';
 import { projects } from '../lib/content';
-import { isCompact, useReveal, useTilt } from '../lib/motion';
+import { useReveal, useTilt } from '../lib/motion';
+import ArrowLink from './ArrowLink';
 import Lightbox from './Lightbox';
 import SectionHead from './SectionHead';
 
 function Case({ project, index }: { project: Project; index: number }) {
-  // On a phone, the phone screenshot is the one worth opening on.
-  const [activeId, setActiveId] = useState(() => {
-    const phone = project.views.find((v) => v.kind === 'phone');
-    return phone && isCompact() ? phone.id : project.views[0].id;
-  });
+  // Every case opens on its handset view: it is the screen these apps are
+  // actually used on, and it reads at a glance on any width.
+  const [activeId, setActiveId] = useState(
+    () => project.views.find((v) => v.kind === 'phone')?.id ?? project.views[0].id,
+  );
   const view = project.views.find((v) => v.id === activeId) ?? project.views[0];
   const stage = useTilt<HTMLDivElement>(5);
   const [zoomed, setZoomed] = useState(false);
@@ -65,7 +67,10 @@ function Case({ project, index }: { project: Project; index: number }) {
               onClick={() => setZoomed(true)}
               aria-label={`Open the ${view.label} screen full size`}
             >
-              <span className="mono">Full size</span>
+              <span className="mono">
+                <Maximize2 size={13} strokeWidth={1.8} aria-hidden="true" />
+                Full size
+              </span>
             </button>
           )}
         </div>
@@ -128,14 +133,10 @@ function Case({ project, index }: { project: Project; index: number }) {
 
         <div className="case__links">
           {project.live && (
-            <a className="link-arrow" href={project.live.href} target="_blank" rel="noreferrer">
-              Open live
-            </a>
+            <ArrowLink href={project.live.href}>Open live</ArrowLink>
           )}
           {project.source && (
-            <a className="link-arrow" href={project.source.href} target="_blank" rel="noreferrer">
-              Source
-            </a>
+            <ArrowLink href={project.source.href}>Source</ArrowLink>
           )}
           {project.note && <span className="case__note mono">{project.note}</span>}
         </div>

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { Mail } from 'lucide-react';
 import { person } from '../lib/content';
 import { scrollToSection, setScrollLock } from '../lib/motion';
+import ArrowLink from './ArrowLink';
 
 const links = [
   { label: 'Work', href: '#work' },
@@ -123,9 +125,13 @@ export default function Nav() {
         </nav>
 
         <div className="nav__sheet-foot">
-          <a className="link-arrow" href={`mailto:${person.email}`}>
+          <ArrowLink
+            href={`mailto:${person.email}`}
+            external={false}
+            icon={<Mail size={15} strokeWidth={1.8} aria-hidden="true" />}
+          >
             {person.email}
-          </a>
+          </ArrowLink>
           <div className="nav__sheet-social">
             <a className="mono" href={person.github} target="_blank" rel="noreferrer">
               GitHub

@@ -709,7 +709,9 @@ main {
   display: grid;
   grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
   gap: clamp(28px, 4vw, 64px);
-  align-items: center;
+  /* Both columns start on the same line — centring them left the title floating
+     above the screenshot with nothing lining up. */
+  align-items: start;
 }
 
 /* Grid and flex items default to min-width:auto, so a tall phone screenshot
@@ -728,11 +730,12 @@ main {
   perspective: 1600px;
 }
 
-/* One fixed-ratio stage so switching between a desktop shot and a phone
-   mock-up never changes the height of the column. */
+/* One fixed-height stage so switching between a desktop shot and a phone
+   mock-up never changes the height of the column. It is sized for the handset,
+   which is the taller of the two. */
 .stage {
   position: relative;
-  aspect-ratio: 16 / 10.6;
+  height: clamp(420px, 38vw, 540px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1037,6 +1040,9 @@ main {
 
 .link-arrow {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font-family: var(--font-mono);
   font-size: 0.76rem;
   letter-spacing: 0.06em;
@@ -1046,8 +1052,17 @@ main {
   transition: color 0.18s ease, border-color 0.18s ease;
 }
 
-.link-arrow::after {
-  content: ' ↗';
+.link-arrow svg {
+  color: var(--accent);
+  flex: none;
+}
+
+/* The leading icon belongs to the label, the trailing arrow to the action. */
+.link-arrow svg:first-child {
+  color: var(--bone-3);
+}
+
+.link-arrow:hover svg:first-child {
   color: var(--accent);
 }
 
@@ -1059,22 +1074,27 @@ main {
 /* Below the two-column breakpoint the handset is the main thing on screen, so
    the stage turns portrait instead of framing it inside a landscape box. */
 @media (max-width: 1023px) {
+  .stage {
+    height: auto;
+    aspect-ratio: 16 / 10.6;
+  }
+
   .stage--phone {
     aspect-ratio: auto;
     height: clamp(360px, 66vh, 560px);
   }
+}
 
-  /* The handset gives back a strip at the bottom so the control has its own
-     room instead of sitting on the screen it is offering to enlarge. */
-  .stage--phone .phone {
-    height: 86%;
-  }
+/* The handset gives back a strip at the bottom of the stage so the control has
+   its own room instead of sitting on the screen it is offering to enlarge. */
+.stage--phone .phone {
+  height: 86%;
+}
 
-  .stage--phone .stage__open {
-    align-items: flex-end;
-    justify-content: center;
-    padding: 0;
-  }
+.stage--phone .stage__open {
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
 }
 
 /* Opens a screenshot at full size — the framed one is a thumbnail. */
@@ -1096,7 +1116,10 @@ main {
 }
 
 .stage__open span {
-  padding: 7px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
   background: rgba(8, 9, 11, 0.74);
@@ -1203,19 +1226,8 @@ main {
   transform: rotate(90deg);
 }
 
-.lightbox__close span {
-  position: absolute;
-  width: 15px;
-  height: 1px;
-  background: var(--bone);
-}
-
-.lightbox__close span:first-child {
-  transform: rotate(45deg);
-}
-
-.lightbox__close span:last-child {
-  transform: rotate(-45deg);
+.lightbox__close svg {
+  color: var(--bone);
 }
 
 /* ---------- about ---------- */
