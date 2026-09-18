@@ -8,6 +8,7 @@ import Work from './components/Work';
 import About from './components/About';
 import Stack from './components/Stack';
 import Contact from './components/Contact';
+import TopButton from './components/TopButton';
 import { keepTriggersFresh, scrollToSection, startSmoothScroll } from './lib/motion';
 import { trackPointer } from './lib/pointer';
 
@@ -47,6 +48,7 @@ export default function App() {
         <Stack />
         <Contact />
       </main>
+      <TopButton />
     </>
   );
 }

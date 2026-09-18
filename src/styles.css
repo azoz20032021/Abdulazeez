@@ -569,6 +569,11 @@ main {
 
 .hero__cue {
   position: absolute;
+  padding: 6px 4px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
   z-index: 2;
   bottom: 28px;
   left: 50%;
@@ -578,6 +583,10 @@ main {
   gap: 12px;
   color: var(--bone-3);
   font-size: 0.66rem;
+}
+
+.hero__cue:hover {
+  color: var(--bone);
 }
 
 .hero__cue i {
@@ -1216,11 +1225,77 @@ main {
 }
 
 .lightbox__figure figcaption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
   max-width: 64ch;
+  text-align: center;
+}
+
+.lightbox__caption {
   color: var(--bone-3);
   font-size: 0.6rem;
   line-height: 1.75;
-  text-align: center;
+}
+
+.lightbox__count {
+  color: var(--bone-2);
+  font-size: 0.56rem;
+  padding: 4px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+/* Step through the rest of that project's screens without leaving the overlay. */
+.lightbox__step {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: rgba(12, 14, 17, 0.82);
+  color: var(--bone);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.lightbox__step:hover {
+  border-color: var(--accent);
+  background: rgba(20, 14, 11, 0.9);
+}
+
+.lightbox__step--prev {
+  inset-inline-start: clamp(10px, 3vw, 34px);
+}
+
+.lightbox__step--next {
+  inset-inline-end: clamp(10px, 3vw, 34px);
+}
+
+/* On a narrow screen the arrows would sit on the screenshot, so they move
+   down beside the caption instead. */
+@media (max-width: 700px) {
+  .lightbox {
+    justify-content: flex-start;
+    padding-top: 74px;
+  }
+
+  .lightbox__step {
+    top: auto;
+    bottom: 22px;
+    transform: none;
+    width: 44px;
+    height: 44px;
+  }
+
+  .lightbox__figure img {
+    max-height: 66vh;
+  }
 }
 
 .lightbox__close {
@@ -1472,6 +1547,48 @@ main {
   border-top: 1px solid var(--line);
   color: var(--bone-3);
   font-size: 0.66rem;
+}
+
+/* With no system scrollbar to drag, this is the quick way back up. */
+.to-top {
+  position: fixed;
+  z-index: 60;
+  inset-block-end: clamp(18px, 3vw, 30px);
+  inset-inline-end: clamp(18px, 3vw, 30px);
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: rgba(12, 14, 17, 0.72);
+  backdrop-filter: blur(8px);
+  color: var(--bone);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(10px) scale(0.92);
+  pointer-events: none;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1),
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.is-locked .to-top {
+  display: none;
+}
+
+.to-top.is-shown {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.to-top:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 /* ---------- device range ---------- */

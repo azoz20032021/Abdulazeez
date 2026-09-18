@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Maximize2 } from 'lucide-react';
-import type { Project } from '../lib/content';
+import type { Project, ProjectView } from '../lib/content';
 import { projects } from '../lib/content';
 import { useReveal, useTilt } from '../lib/motion';
 import ArrowLink from './ArrowLink';
@@ -15,7 +15,12 @@ function Case({ project, index }: { project: Project; index: number }) {
   );
   const view = project.views.find((v) => v.id === activeId) ?? project.views[0];
   const stage = useTilt<HTMLDivElement>(5);
-  const [zoomed, setZoomed] = useState(false);
+
+  // The code panel is not an image, so it is not part of the full-size set.
+  const shots = project.views.filter(
+    (v): v is Extract<ProjectView, { src: string }> => v.kind !== 'code',
+  );
+  const [zoomIndex, setZoomIndex] = useState<number | null>(null);
 
   return (
     <article className={`case ${index % 2 === 1 ? 'case--flip' : ''}`} data-anim>
@@ -64,7 +69,7 @@ function Case({ project, index }: { project: Project; index: number }) {
             <button
               className="stage__open"
               type="button"
-              onClick={() => setZoomed(true)}
+              onClick={() => setZoomIndex(shots.findIndex((sh) => sh.id === view.id))}
               aria-label={`Open the ${view.label} screen full size`}
             >
               <span className="mono">
@@ -75,12 +80,17 @@ function Case({ project, index }: { project: Project; index: number }) {
           )}
         </div>
 
-        {view.kind !== 'code' && zoomed && (
+        {zoomIndex !== null && (
           <Lightbox
-            src={view.src}
-            alt={view.alt}
-            caption={`${project.title} — ${view.caption}`}
-            onClose={() => setZoomed(false)}
+            title={project.title}
+            shots={shots}
+            index={zoomIndex}
+            onIndex={(i) => {
+              setZoomIndex(i);
+              // Closing leaves the card on the screen that was being looked at.
+              setActiveId(shots[i].id);
+            }}
+            onClose={() => setZoomIndex(null)}
           />
         )}
 

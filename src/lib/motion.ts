@@ -102,6 +102,8 @@ export function openAtTop() {
 
 export function setScrollLock(locked: boolean) {
   document.body.style.overflow = locked ? 'hidden' : '';
+  // Anything floating over the page hides while an overlay owns the screen.
+  document.documentElement.classList.toggle('is-locked', locked);
   if (!lenis) return;
   if (locked) lenis.stop();
   else lenis.start();

@@ -82,10 +82,15 @@ export default function Hero() {
         </Suspense>
       </div>
 
-      <div className="hero__cue mono" aria-hidden="true">
+      <button
+        className="hero__cue mono"
+        type="button"
+        onClick={() => scrollToSection('#work')}
+        aria-label="Scroll to the work"
+      >
         <span>Scroll</span>
-        <i />
-      </div>
+        <i aria-hidden="true" />
+      </button>
     </section>
   );
 }
