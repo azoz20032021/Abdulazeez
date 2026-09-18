@@ -36,6 +36,16 @@ export default function App() {
 
   return (
     <>
+      <a
+        className="skip"
+        href="#work"
+        onClick={(e) => {
+          e.preventDefault();
+          scrollToSection('#work');
+        }}
+      >
+        Skip to the work
+      </a>
       <Intro />
       <Backdrop />
       <div className="grain" aria-hidden="true" />

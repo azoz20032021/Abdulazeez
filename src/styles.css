@@ -1,10 +1,94 @@
+/* ---------- fonts ----------
+   Self-hosted rather than pulled from Google: it drops a third-party DNS,
+   TLS and CSS round trip off the critical path, and nothing about a visitor
+   is handed to another origin to render the page. All three families are
+   SIL Open Font License 1.1 — Archivo, Instrument Sans, JetBrains Mono. */
+
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url('/fonts/archivo-100-900-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url('/fonts/archivo-100-900-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url('/fonts/instrument-sans-400-700-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url('/fonts/instrument-sans-400-700-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-400-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-400-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-500-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-500-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   --ink: #08090b;
   --ink-1: #0c0e11;
   --ink-2: #101317;
   --bone: #edebe6;
   --bone-2: #a2a8af;
-  --bone-3: #6b7178;
+  /* 4.7:1 on every surface here — the old #6b7178 was 4.0:1, under AA, and
+     this is the colour the small print is set in. */
+  --bone-3: #7a8089;
   --accent: #ff5f2e;
   --line: rgba(237, 235, 230, 0.1);
   --line-strong: rgba(237, 235, 230, 0.2);
@@ -117,7 +201,42 @@ a {
   white-space: pre;
 }
 
+/* Keyboard users land on this first and can jump the header with it. */
+.skip {
+  position: fixed;
+  top: 12px;
+  inset-inline-start: 12px;
+  z-index: 200;
+  padding: 11px 17px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--bone);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transform: translateY(-180%);
+  transition: transform 0.2s ease;
+}
+
+.skip:focus-visible {
+  transform: none;
+}
+
 /* ---------- intro curtain ---------- */
+
+/* Both cases are decided before the bundle runs, by the inline script in the
+   document head and by the media query. */
+.intro-seen #boot {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #boot {
+    display: none;
+  }
+}
 
 .intro {
   position: fixed;
@@ -1705,5 +1824,96 @@ main {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- print ---------- */
+
+/* Someone will save this page as a PDF or send it to a printer. Flip the
+   palette to ink on paper, drop the parts that only exist on a screen, and
+   spell the links out since they cannot be clicked. */
+@media print {
+  :root {
+    --ink: #ffffff;
+    --ink-1: #ffffff;
+    --ink-2: #ffffff;
+    --bone: #101114;
+    --bone-2: #3a3d42;
+    --bone-3: #565b62;
+    --line: rgba(0, 0, 0, 0.16);
+    --line-strong: rgba(0, 0, 0, 0.3);
+    color-scheme: light;
+  }
+
+  .backdrop,
+  .grain,
+  .intro,
+  .nav,
+  .to-top,
+  .hero__canvas,
+  .hero__cue,
+  .skip,
+  .stage__open,
+  .switcher,
+  .lightbox {
+    display: none !important;
+  }
+
+  /* Set in a literal rgba rather than a token, so the palette swap misses it. */
+  .metrics {
+    background: none;
+    backdrop-filter: none;
+  }
+
+  body {
+    font-size: 10.5pt;
+  }
+
+  .hero {
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .hero__inner {
+    padding-block: 0 20pt;
+  }
+
+  .hero__title {
+    font-size: 30pt;
+  }
+
+  .sec__title {
+    font-size: 18pt;
+  }
+
+  .sec {
+    padding-block: 16pt;
+    break-inside: avoid;
+  }
+
+  .case,
+  .xp__item,
+  .metric {
+    break-inside: avoid;
+  }
+
+  .frame,
+  .phone,
+  .to-top {
+    box-shadow: none;
+  }
+
+  .phone {
+    background: none;
+    transform: none;
+    padding: 0;
+  }
+
+  /* On paper a link has to say where it goes. */
+  .case__links a::after,
+  .contact__row a::after {
+    content: ' (' attr(href) ')';
+    font-size: 7.5pt;
+    color: #555;
   }
 }

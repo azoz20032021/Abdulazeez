@@ -38,16 +38,77 @@
         "knowsAbout": ["React", "TypeScript", "Node.js", "Firebase", "MongoDB", "Redis", "Docker"]
       }
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="/fonts/archivo-100-900-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/instrument-sans-400-700-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- Without JavaScript nothing would ever lift the curtain below. -->
+    <noscript><style>#boot { display: none !important; }</style></noscript>
+
+    <script>
+      // The curtain is one-per-session, and that has to be known before the
+      // bundle loads or it flashes on every navigation. The timeout is a safety
+      // net: if the bundle never arrives, the page is not left behind a screen.
+      (function () {
+        try {
+          if (sessionStorage.getItem('intro-seen') === '1') {
+            document.documentElement.className += ' intro-seen';
+          }
+        } catch (e) {}
+        setTimeout(function () {
+          var boot = document.getElementById('boot');
+          if (boot) boot.remove();
+        }, 8000);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
+
+    <!-- Painted from static HTML so the name is there immediately; the bundle
+         animates it away once it is ready. -->
+    <div class="intro" id="boot">
+      <p class="intro__name"><span>Abdulazeez Alagele</span></p>
+      <p class="intro__line"><i></i></p>
+    </div>
+
+    <!-- The page is rendered by React. Anything that does not run it — a reader,
+         an old browser, a crawler that skips scripts — still gets the substance. -->
+    <noscript>
+      <div style="max-width: 46rem; margin: 0 auto; padding: 48px 24px; font-family: system-ui, sans-serif; line-height: 1.6; color: #edebe6">
+        <h1 style="font-size: 2rem; margin: 0 0 8px">Abdulazeez Alagele</h1>
+        <p style="margin: 0 0 24px; color: #a2a8af">Full-Stack Engineer — Istanbul, Türkiye</p>
+        <p>
+          I design the data model, the API and the interface, then make them survive real
+          traffic, real money and real people. A five-role school ERP in daily use by
+          students, teachers, parents and office staff; a real-time chat platform; a
+          webhook delivery API built around idempotency and retries.
+        </p>
+        <p>
+          <a href="mailto:drydb3483@gmail.com" style="color: #ff5f2e">drydb3483@gmail.com</a>
+          &nbsp;·&nbsp;
+          <a href="https://github.com/azoz20032021" style="color: #ff5f2e">GitHub</a>
+          &nbsp;·&nbsp;
+          <a href="https://linkedin.com/in/abdul-aziz-874455225" style="color: #ff5f2e">LinkedIn</a>
+          &nbsp;·&nbsp;
+          <a href="/Abdulazeez-Alagele-CV.pdf" style="color: #ff5f2e">CV (PDF)</a>
+        </p>
+        <p style="color: #a2a8af">This site needs JavaScript for the case studies and the 3D.</p>
+      </div>
+    </noscript>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
