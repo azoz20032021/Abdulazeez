@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Maximize2 } from 'lucide-react';
 import type { Project, ProjectView } from '../lib/content';
-import { projects } from '../lib/content';
+import { projects, sectionCopy } from '../lib/content';
 import { useReveal, useTilt } from '../lib/motion';
 import ArrowLink from './ArrowLink';
 import Lightbox from './Lightbox';
@@ -15,6 +15,7 @@ function Case({ project, index }: { project: Project; index: number }) {
   );
   const view = project.views.find((v) => v.id === activeId) ?? project.views[0];
   const stage = useTilt<HTMLDivElement>(5);
+  const hasPhone = project.views.some((v) => v.kind === 'phone');
 
   // The code panel is not an image, so it is not part of the full-size set.
   const shots = project.views.filter(
@@ -23,9 +24,13 @@ function Case({ project, index }: { project: Project; index: number }) {
   const [zoomIndex, setZoomIndex] = useState<number | null>(null);
 
   return (
-    <article className={`case ${index % 2 === 1 ? 'case--flip' : ''}`} data-anim>
+    <article className={`case ${index % 2 === 1 ? 'case--flip' : ''}`} data-anim data-spot>
       <div className="case__media">
-        <div className={`stage ${view.kind === 'phone' ? 'stage--phone' : ''}`} ref={stage}>
+        <div className="case__media-inner">
+        <div
+          className={`stage ${view.kind === 'phone' ? 'stage--phone' : ''} ${hasPhone ? '' : 'stage--fit'}`}
+          ref={stage}
+        >
           {view.kind === 'code' ? (
             <div className="frame frame--code" key={view.id}>
               <div className="frame__bar">
@@ -111,6 +116,7 @@ function Case({ project, index }: { project: Project; index: number }) {
         )}
 
         <p className="case__caption mono">{view.caption}</p>
+        </div>
       </div>
 
       <div className="case__body">
@@ -141,14 +147,25 @@ function Case({ project, index }: { project: Project; index: number }) {
           ))}
         </div>
 
-        <div className="case__links">
-          {project.live && (
-            <ArrowLink href={project.live.href}>Open live</ArrowLink>
-          )}
-          {project.source && (
-            <ArrowLink href={project.source.href}>Source</ArrowLink>
-          )}
-          {project.note && <span className="case__note mono">{project.note}</span>}
+        <div className="case__foot">
+          <div className="case__links">
+            {project.live && (
+              <ArrowLink href={project.live.href}>Open live</ArrowLink>
+            )}
+            {project.source && (
+              <ArrowLink href={project.source.href}>Source</ArrowLink>
+            )}
+            {project.note && <span className="case__note mono">{project.note}</span>}
+          </div>
+
+          <dl className="case__facts">
+            {project.facts.map((f) => (
+              <div key={f.label}>
+                <dt className="mono">{f.label}</dt>
+                <dd>{f.value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </div>
     </article>
@@ -161,7 +178,12 @@ export default function Work() {
   return (
     <section className="sec" id="work" ref={ref}>
       <div className="shell">
-        <SectionHead index="01" label="Selected work" title="Things that run in production." />
+        <SectionHead
+          index="01"
+          label="Selected work"
+          title="Things that run in production."
+          lede={sectionCopy.work}
+        />
 
         <div className="cases">
           {projects.map((p, i) => (

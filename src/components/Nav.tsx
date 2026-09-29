@@ -6,6 +6,7 @@ import ArrowLink from './ArrowLink';
 
 const links = [
   { label: 'Work', href: '#work' },
+  { label: 'Approach', href: '#approach' },
   { label: 'About', href: '#about' },
   { label: 'Stack', href: '#stack' },
   { label: 'Contact', href: '#contact' },

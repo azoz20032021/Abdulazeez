@@ -1,4 +1,4 @@
-import { lazy, Suspense, useLayoutEffect, useRef } from 'react';
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 
 // three + drei ship in their own chunk, so the headline paints before WebGL loads.
@@ -7,8 +7,28 @@ import { intro, person } from '../lib/content';
 import { introPlays } from '../lib/intro';
 import { prefersReducedMotion, scrollToSection, useMagnetic } from '../lib/motion';
 
+/** Wall-clock time in Istanbul, so a visitor can tell at a glance whether I am awake. */
+function useIstanbulTime() {
+  const format = () =>
+    new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/Istanbul',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).format(new Date());
+  const [time, setTime] = useState(format);
+
+  useEffect(() => {
+    const id = window.setInterval(() => setTime(format()), 15_000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  return time;
+}
+
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
+  const time = useIstanbulTime();
   const cta = useMagnetic<HTMLAnchorElement>(0.22);
 
   useLayoutEffect(() => {
@@ -21,7 +41,7 @@ export default function Hero() {
         .from('.hero__line span', { yPercent: 108, duration: 1.15, stagger: 0.1 }, 0.15)
         .from('.hero__lede', { y: 18, opacity: 0, duration: 0.8 }, 0.7)
         .from('.hero__actions > *', { y: 16, opacity: 0, duration: 0.7, stagger: 0.08 }, 0.85)
-        .from('.hero__cue', { opacity: 0, duration: 0.8 }, 1.2);
+        .from('.hero__cue, .hero__meta > *', { opacity: 0, duration: 0.8 }, 1.2);
 
       gsap.to('.hero__inner', {
         y: 90,
@@ -80,6 +100,16 @@ export default function Hero() {
         <Suspense fallback={null}>
           <HeroShards />
         </Suspense>
+      </div>
+
+      <div className="hero__meta shell mono">
+        <span>
+          Istanbul <b>{time}</b> · GMT+3
+        </span>
+        <span className="hero__avail">
+          <i aria-hidden="true" />
+          Available for work
+        </span>
       </div>
 
       <button

@@ -41,6 +41,8 @@ export type Project = {
   highlights: string[];
   stack: string[];
   views: ProjectView[];
+  /** Three or four figures pulled out of the write-up, shown as a strip under the copy. */
+  facts: { value: string; label: string }[];
   live?: { label: string; href: string };
   source?: { label: string; href: string };
   note?: string;
@@ -99,6 +101,12 @@ export const projects: Project[] = [
         caption: 'Student on a phone — marks, attendance, fees in IQD and the QR card the gate reads',
       },
     ],
+    facts: [
+      { value: '116', label: 'REST endpoints' },
+      { value: '22', label: 'Firestore collections' },
+      { value: '25', label: 'React screens' },
+      { value: '~23k', label: 'Lines of TypeScript' },
+    ],
     live: { label: 'abdulazeezdoman.tech', href: 'https://abdulazeezdoman.tech' },
     source: { label: 'SchoolDemo', href: 'https://github.com/azoz20032021/SchoolDemo' },
     note: 'Demo: four one-click roles, no credentials to type.',
@@ -153,6 +161,11 @@ export const projects: Project[] = [
         caption: 'On a phone the list and the room become two screens instead of two panes',
       },
     ],
+    facts: [
+      { value: '62', label: 'Realtime tests' },
+      { value: '3', label: 'Languages' },
+      { value: 'RTL', label: 'Fully mirrored' },
+    ],
     live: { label: 'letmessege-client.vercel.app', href: 'https://letmessege-client.vercel.app' },
     note: 'Demo login: demo@test.com / 123456',
   },
@@ -188,6 +201,11 @@ export const projects: Project[] = [
         ],
       },
     ],
+    facts: [
+      { value: '2', label: 'Idempotency tiers' },
+      { value: '5', label: 'Retry steps' },
+      { value: 'HMAC', label: 'Signed deliveries' },
+    ],
     source: { label: 'EventPulse', href: 'https://github.com/azoz20032021/EventPulse' },
     note: 'Backend only — no interface to screenshot.',
   },
@@ -210,6 +228,11 @@ export const projects: Project[] = [
         caption: 'Home — featured title and trending carousel over a live external catalogue',
         bar: 'cine-luxe.vercel.app',
       },
+    ],
+    facts: [
+      { value: 'SPA', label: 'React + TypeScript' },
+      { value: 'REST', label: 'External catalogue' },
+      { value: 'Vercel', label: 'Deployed' },
     ],
     live: { label: 'cine-luxe.vercel.app', href: 'https://cine-luxe.vercel.app' },
   },
@@ -273,4 +296,44 @@ export const stack = [
     ],
   },
   { group: 'Languages', items: ['JavaScript (ES6+)', 'TypeScript', 'Python', 'Java', 'SQL', 'C'] },
+];
+
+export const sectionCopy = {
+  work: 'Four builds, from a school’s daily operations to a webhook engine — with the trade-offs behind each one.',
+  approach: 'Four habits that show up in every system I ship, and where each of them shows.',
+  about: 'The short version of who is behind the work.',
+  stack: 'What I have shipped with, grouped by where it sits in the system.',
+  contact: 'Available in Istanbul or remote. Tell me what you are building and I will reply myself.',
+};
+
+/** Each principle is drawn from a figure or decision already in the case studies. */
+export const approach = [
+  {
+    title: 'Count the cost of every read.',
+    body: 'On a metered database a busy screen is a bill. Denormalised totals, server-side aggregations, a TTL cache and a badge that polls one integer cut the busiest poll by about 60×.',
+    proof: '60×',
+    proofLabel: 'fewer reads',
+    seen: 'School ERP',
+  },
+  {
+    title: 'Design for the network dropping.',
+    body: 'Messages render optimistically and reconcile on acknowledgement; unread counts come from a read cursor, not a counter; paginated queries fall back to an offset cursor instead of failing.',
+    proof: 'PWA',
+    proofLabel: 'works offline',
+    seen: 'LetMessage · School ERP',
+  },
+  {
+    title: 'Keep private data on the device.',
+    body: 'Face recognition for the gate tablet runs in the browser: descriptors are computed client-side, no image is ever stored, and ambiguous matches between siblings are refused.',
+    proof: '0',
+    proofLabel: 'images stored',
+    seen: 'School ERP',
+  },
+  {
+    title: 'Prove it before it ships.',
+    body: 'Live Socket.IO clients against an in-memory MongoDB, integration tests over the API, all of it running on GitHub Actions before anything merges.',
+    proof: '123',
+    proofLabel: 'tests in CI',
+    seen: 'School ERP · LetMessage',
+  },
 ];

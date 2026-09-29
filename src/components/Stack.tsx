@@ -1,4 +1,4 @@
-import { stack } from '../lib/content';
+import { sectionCopy, stack } from '../lib/content';
 import { useReveal } from '../lib/motion';
 import SectionHead from './SectionHead';
 
@@ -8,7 +8,7 @@ export default function Stack() {
   return (
     <section className="sec" id="stack" ref={ref}>
       <div className="shell">
-        <SectionHead index="03" label="Stack" title="What I work with." />
+        <SectionHead index="04" label="Stack" title="What I work with." lede={sectionCopy.stack} />
 
         <div className="spec">
           {stack.map((row) => (

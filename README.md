@@ -27,12 +27,14 @@ no UI framework.
 
 ```
 src/
-  components/   sections — nav, hero, metrics, work, about, stack, contact
+  components/   sections — nav, hero, metrics, work, approach, about, stack, contact, footer;
+                cursor ring and card spotlight are global extras
   three/        HeroField (background lattice), HeroShards (floating chrome)
   lib/
     content.ts  all copy, projects and stack lists live here
     motion.ts   Lenis + ScrollTrigger wiring, reveal hook, scroll helpers
     pointer.ts  normalised pointer position shared by both canvases
+    spotlight.ts  --mx/--my on any [data-spot] card, for the hover light
   styles.css    tokens and every component style
 public/
   shots/        project screenshots
@@ -40,6 +42,12 @@ public/
 ```
 
 **To change the content, edit `src/lib/content.ts` — nothing else hardcodes copy.**
+That includes each project's figure strip (`facts`), the "How I build things" cards
+(`approach`) and the one-line section intros (`sectionCopy`).
+
+The contact form has no backend: it composes a `mailto:` in the visitor's mail app.
+To receive messages directly, point `onSubmit` in `Contact.tsx` at a form endpoint
+(Formspree, Web3Forms) instead.
 
 ## Notes
 
